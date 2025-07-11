@@ -1,0 +1,43 @@
+services:
+  charm-php:
+    container_name: charmefy
+    build: .
+    ports:
+      - "8081:80"
+    depends_on:
+      - charm-db
+    volumes:
+      - ./bin:/var/www/html/bin
+      - ./config:/var/www/html/config
+      - ./migrations:/var/www/html/migrations
+      - ./public:/var/www/html/public
+      - ./src:/var/www/html/src
+      - ./templates:/var/www/html/templates
+      - ./tests:/var/www/html/tests
+      - ./translations:/var/www/html/translations
+      - ./var:/var/www/html/var
+      - ./vendor:/var/www/html/vendor
+      - ./composer.json:/var/www/html/composer.json
+      - ./composer.lock:/var/www/html/composer.lock
+    env_file:
+      - .env.local
+  redis:
+    image: redis:7.0.0
+    ports:
+      - "6379:6379"
+  charm-db:
+    image: mysql:latest
+    container_name: charmefy_devdb
+    restart: always
+    ports:
+      - 3310:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: pass1234
+      MYSQL_DATABASE: charm
+      MYSQL_USER: User
+      MYSQL_PASSWORD: pass1234
+
+volumes:
+  ###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###
