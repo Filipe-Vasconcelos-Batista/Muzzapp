@@ -33,7 +33,7 @@ class SalonType extends AbstractType
                 'attr' => ['placeholder'=>'https://example.com']
             ] )
             ->add('email', EmailType::class )
-            ->add('location',TextType::class)
+            ->add('address',TextType::class)
         ;
     }
 
@@ -41,6 +41,7 @@ class SalonType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Salon::class,
+            'csrf_protection' => false
         ]);
     }
 }

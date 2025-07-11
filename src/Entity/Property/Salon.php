@@ -109,7 +109,7 @@ class Salon
         return $this->address;
     }
 
-    public function setAdress(string $address): static
+    public function setAddress(string $address): static
     {
         $this->address = $address;
 
