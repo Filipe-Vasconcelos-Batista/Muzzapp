@@ -72,7 +72,7 @@ final class SalonController extends AbstractController
         }
         UtilsController::class->checkSalonRole($this->getUser(),$entityManager, $salon, SalonRoleEnum::ROLE_OWNER);
 
-        $form  = $this->createForm(SalonType::class,$entityManager, $salon, SalonRoleEnum::ROLE_OWNER);
+        $form  = $this->createForm(SalonType::class,$salon);
         $form->submit(json_decode($request->getContent(), true),false);
 
         if (!$form->isSubmitted() || !$form->isValid()) {
