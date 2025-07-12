@@ -2,6 +2,7 @@
 
 namespace App\Controller\Property;
 
+use App\Controller\Utils\UtilsController;
 use App\Entity\Property\Salon;
 use App\Entity\Property\SalonRoles;
 use App\Enum\SalonRoleEnum;
@@ -54,6 +55,42 @@ final class SalonController extends AbstractController
             'data'   => ['salon'=>$salon, 'OwnerRole'=>$roleLink],
         ], 201);
 
+
+    }
+
+    #[Route('api/salon/{id}', name: 'app_salon_create', methods: ['Patch'])]
+    public function patchSalon(
+        Request $request,
+        int $id,
+        EntityManagerInterface $entityManager,
+    ): JsonResponse
+    {
+        $salon = $entityManager->getRepository(Salon::class)->find($id);
+
+        if(!$salon){
+            return new JsonResponse(['success'=>false, 'errors'=> ['Salon not found']],404);
+        }
+        UtilsController::class->checkSalonRole($this->getUser(),$entityManager, $salon, SalonRoleEnum::ROLE_OWNER);
+
+        $form  = $this->createForm(SalonType::class,$entityManager, $salon, SalonRoleEnum::ROLE_OWNER);
+        $form->submit(json_decode($request->getContent(), true),false);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $errors = [];
+            foreach ($form->getErrors(true) as $err) {
+                $errors[] = $err->getMessage();
+            }
+            return new JsonResponse(['success'=>false,'errors'=>$errors], 400);
+        }
+
+        $entityManager->flush();
+
+
+
+        return new JsonResponse([
+            'success'=>true,
+            'data'   => ['salon'=>$salon],
+        ], 201);
 
     }
 }
