@@ -45,10 +45,7 @@ final class SalonController extends AbstractController
         $roleLink->setCreatedAt(new \DateTimeImmutable());
 
         $entityManager->persist($roleLink);
-
         $entityManager->flush();
-
-
 
         return new JsonResponse([
             'success'=>true,
@@ -70,8 +67,11 @@ final class SalonController extends AbstractController
         if(!$salon){
             return new JsonResponse(['success'=>false, 'errors'=> ['Salon not found']],404);
         }
-        UtilsController::class->checkSalonRole($this->getUser(),$entityManager, $salon, SalonRoleEnum::ROLE_OWNER);
+        $response = UtilsController::class->checkSalonRole($this->getUser(),$entityManager, $salon, SalonRoleEnum::ROLE_OWNER);
 
+        if($response instanceof JsonResponse){
+            return $response;
+        }
         $form  = $this->createForm(SalonType::class,$salon);
         $form->submit(json_decode($request->getContent(), true),false);
 
@@ -85,12 +85,32 @@ final class SalonController extends AbstractController
 
         $entityManager->flush();
 
-
-
         return new JsonResponse([
             'success'=>true,
             'data'   => ['salon'=>$salon],
         ], 201);
+    }
 
+    #[Route('api/salon/{id}', name: 'app_salon_delete', methods: ['DELETE'])]
+    public function deleteSalon(
+        int $id,
+        EntityManagerInterface $entityManager,
+    ): JsonResponse {
+        $salon = $entityManager->getRepository(Salon::class)->find($id);
+
+        if (!$salon) {
+            return new JsonResponse(['success' => false, 'errors' => ['Salon not found']], 404);
+        }
+
+        $response = UtilsController::checkSalonRole($this->getUser(), $entityManager, $salon, SalonRoleEnum::ROLE_OWNER);
+
+        if($response instanceof JsonResponse){
+            return $response;
+        }
+
+        $entityManager->remove($salon);
+        $entityManager->flush();
+
+        return new JsonResponse(['success' => true, 'message' => 'Salon deleted successfully']);
     }
 }
