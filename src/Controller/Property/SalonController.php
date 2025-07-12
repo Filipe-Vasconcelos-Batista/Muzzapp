@@ -15,6 +15,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SalonController extends AbstractController
 {
+    public function __construct(
+        private UtilsController $utils,
+    ) {}
     #[Route('api/salon/create', name: 'app_salon_create', methods: ['POST'])]
     public function createSalon(
         Request $request,
@@ -67,7 +70,7 @@ final class SalonController extends AbstractController
         if(!$salon){
             return new JsonResponse(['success'=>false, 'errors'=> ['Salon not found']],404);
         }
-        $response = UtilsController::class->checkSalonRole($this->getUser(),$entityManager, $salon, SalonRoleEnum::ROLE_OWNER);
+        $response = $this->utils->checkSalonRole($this->getUser(), $salon, SalonRoleEnum::ROLE_OWNER);
 
         if($response instanceof JsonResponse){
             return $response;
@@ -102,7 +105,7 @@ final class SalonController extends AbstractController
             return new JsonResponse(['success' => false, 'errors' => ['Salon not found']], 404);
         }
 
-        $response = UtilsController::checkSalonRole($this->getUser(), $entityManager, $salon, SalonRoleEnum::ROLE_OWNER);
+        $response = $this->utils->checkSalonRole($this->getUser(), $salon, SalonRoleEnum::ROLE_OWNER);
 
         if($response instanceof JsonResponse){
             return $response;
