@@ -21,7 +21,7 @@ final class SalonRolesController extends AbstractController
         private readonly EntityManagerInterface $entityManager
     ) {}
 
-    #[Route('/api/salon/user/role/{id}', name: 'app_property_salon_role', methods: ['POST'])]
+    #[Route('/api/salon/user/role/{id}', name: 'app_create_user_and_salon_role', methods: ['POST'])]
     public function createSalonRole(
         Request $request,
         UserPasswordHasherInterface $passwordHasher,
@@ -37,14 +37,16 @@ final class SalonRolesController extends AbstractController
             $data['email']= $data['firstName'] . $data['lastName'] . "@" . $salon->getName() . ".com";
             $data['isSystemEmail']=true;
         }
+
         $user
             ->setEmail($data['email'])
             ->setPassword($passwordHasher->hashPassword($user,$data['password']))
             ->setFirstName($data['firstName'])
             ->setLastName($data['lastName'])
             ->setPhoneNumber($data['phoneNumber'])
-            ->setIsSystemEmail($data['isSystemEmail'] ?? false )
-            ->setCreatedAt(new \DateTimeImmutable());
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setAcceptedTermsAt(new \DateTimeImmutable());
+        $user->setIsSystemEmail($data['isSystemEmail'] ?? false );
         $this->entityManager->persist($user);
 
         $roleLink=$this->createWorkerRoles($salon,$user);
