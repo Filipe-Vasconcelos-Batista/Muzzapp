@@ -58,7 +58,7 @@ final class SalonController extends AbstractController
 
     }
 
-    #[Route('api/salon/{id}', name: 'app_salon_create', methods: ['Patch'])]
+    #[Route('api/salon/{id}', name: 'app_salon_patch', methods: ['Patch'])]
     public function patchSalon(
         Request $request,
         int $id,

@@ -54,6 +54,7 @@ class CalendarType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Calendar::class,
+            'csrf_protection' => false
         ]);
     }
 }

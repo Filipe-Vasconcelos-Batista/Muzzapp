@@ -43,6 +43,7 @@ class SalonRolesType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => SalonRoles::class,
+            'csrf_protection' => false
         ]);
     }
 }

@@ -1,19 +1,20 @@
 services:
-  charm-php:
-    container_name: charmefy
+  muzzapp:
     build: ./BackEnd
     ports:
       - "8081:80"
     depends_on:
       - charm-db
     volumes:
-      - ./BackEnd:/var/www/html/BackEnd
+      - ./BackEnd:/var/www/html
     env_file:
       - BackEnd/.env.local
+
   redis:
     image: redis:7.0.0
     ports:
       - "6379:6379"
+
   charm-db:
     image: mysql:latest
     container_name: charmefy_devdb
