@@ -1,14 +1,13 @@
 import Nav from "./components/NavBar.tsx";
-import './App.css';
 import './output.css'
 
 function App() {
     return (
-            <>
-            <Nav></Nav>
-            </>
-)
-    ;
+            <div className=".cor-nackground min-h-screen">
+                <Nav/>
+            </div>
+    )
+            ;
 }
 
 export default App;

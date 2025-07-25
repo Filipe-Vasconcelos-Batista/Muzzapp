@@ -1,8 +1,8 @@
 import { Routes, Route, Link } from 'react-router-dom';
-import { PetsList } from './pets/PetsList.tsx';
 import { CreatePetForm } from './pets/PetInsert.tsx';
 import {LoginForm} from "./User/Login.tsx";
 import { Home } from '../pages/Home.tsx';
+import  SignUpForm  from './User/Signup.tsx'
 import {useState} from "react";
 
 
@@ -37,11 +37,11 @@ function Nav() {
                         </div>
                         <div className="hidden lg:flex lg:gap-x-12">
                             {navLinks.map(({name, path}) => (
-                                    <Link key={name} to={path} className="text-sm/6 font-semibold text-gray-900">{name}</Link>
+                                    <Link key={name} to={path} className="text-sm/6 font-semibold texto-cor-corpo">{name}</Link>
                             ))}
                         </div>
                         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-                            <a href="/login" className="text-sm/6 font-semibold text-gray-900">Log in <span
+                            <a href="/login" className="text-sm/6 font-semibold texto-cor-corpo">Log in <span
                                     aria-hidden="true">&rarr;</span></a>
                         </div>
                     </nav>
@@ -71,14 +71,14 @@ function Nav() {
                                                 <Link onClick={() => setMenuOpen(false)}
                                                       key={name}
                                                       to={path}
-                                                      className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                                      className="-mx-3 block rounded-lg px-3 py-2 text-base/7 texto-cor-corpo font-semibold hover:bg-gray-50">
                                                     {name}
                                                 </Link>
                                         ))}
                                     </div>
                                     <div className="py-6">
                                         <a href="/login"
-                                           className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">Log
+                                           className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold texto-cor-corpo hover:bg-gray-50">Log
                                             in</a>
                                     </div>
                                 </div>
@@ -98,6 +98,7 @@ function Nav() {
                         <Route path='/insert' element={<CreatePetForm/>}/>
                         <Route path='/' element={<Home/>}/>
                         <Route path='/login' element={<LoginForm/>}/>
+                        <Route path='/signup' element={<SignUpForm/>}/>
                         <Route path="*" element={<h2>Page Not Found</h2>}/>
                     </Routes>
                 </main>
