@@ -1,36 +1,38 @@
-import  { useState } from 'react'
+import React, {useEffect, useState} from 'react'
+import { login } from '../../utils/Auth.ts' // adjust path as needed
 
-const defaultForm=
-        {
-            email:    '',
-            password: ''
-        }
 export function LoginForm() {
-    const [formData, setFormData] = useState(defaultForm)
-
     const [message, setMessage] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
-
+    const [rememberMe, setRememberMe] = useState(false)
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    useEffect(() => {
+        const saved = localStorage.getItem('credentials')
+        if (saved) {
+            const { email, password } = JSON.parse(saved)
+            setEmail(email)
+            setPassword(password)
+            setRememberMe(true)
+        }
+    }, [])
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
         try {
-            const res = await fetch('http://localhost:8081/api/auth/login_check', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            })
-
-            if (!res.ok) {
-                const err = await res.json()
-                throw new Error(err.message || 'Unknown error')
-            }
-
-            const data = await res.json()
-            setMessage(data.message)
+            await login(email, password)
+            setMessage('Login successful!')
             setError(null)
-            setFormData(defaultForm)
+
+            if (rememberMe) {
+                localStorage.setItem(
+                        'credentials',
+                        JSON.stringify({ email, password })
+                )
+            } else {
+                localStorage.removeItem('credentials')
+            }
         } catch (e) {
-            setError(e.message)
+            setError(e.message || 'Login failed')
             setMessage(null)
         }
     }
@@ -52,9 +54,10 @@ export function LoginForm() {
                                 <div className="mt-2">
                                     <input id="email"
                                            name="email"
-                                           value={formData.email}
                                            required
                                            type="email"
+                                           value={email}
+                                           onChange={(e) => setEmail(e.target.value)}
                                            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
                                 </div>
                             </div>
@@ -70,18 +73,32 @@ export function LoginForm() {
                                 <div className="mt-2">
                                     <input type='password'
                                            name="password"
-                                           value={formData.password}
                                            maxLength={64}
                                            id="password"
                                            required
+                                           value={password}
+                                           onChange={(e) => setPassword(e.target.value)}
                                            autoComplete="current-password"
                                            className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
                                 </div>
                             </div>
+                            <div className="flex justify-center">
+                                <div className="flex items-center h-5">
+                                    <input
+                                            id="remember"
+                                            aria-describedby="remember"
+                                            type="checkbox"
+                                            checked={rememberMe}
+                                            onChange={e => setRememberMe(e.target.checked)}
+                                            className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"></input>
+                                </div>
+                                <div className="ml-3 text-sm">
+                                    <label htmlFor="remember" className="font-light texto-cor-destaque">Lembra-te de mim</label>
+                                </div>
+                            </div>
                             <div>
                                 <button type="submit"
-                                        className="flex mt-2 w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign
-                                    in
+                                        className="flex mt-2 w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Login
                                 </button>
                             </div>
                             {message && <p className="mt-10 text-center text-sm/6 text-gray-500">{message}</p>}
