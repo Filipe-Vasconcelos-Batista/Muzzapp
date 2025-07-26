@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import {Register} from '../../types/Register.ts'
-import { ApiError } from '../../utils/ApiError'
-import {login} from "../../utils/Auth.ts";
+import {Register} from '../types/Register.ts'
+import { ApiError } from '../utils/ApiError.ts'
+import {login} from "../utils/Auth.ts";
 
 const initialRegister: Register = {
     firstName: '',

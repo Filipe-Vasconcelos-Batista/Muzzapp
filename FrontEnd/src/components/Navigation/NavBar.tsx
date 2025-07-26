@@ -1,16 +1,17 @@
-import { Routes, Route, Link } from 'react-router-dom';
-import { CreatePetForm } from './pets/PetInsert.tsx';
-import {LoginForm} from "./User/Login.tsx";
-import { Home } from '../pages/Home.tsx';
-import  SignUpForm  from './User/Signup.tsx'
-import {useState} from "react";
+import { Link } from 'react-router-dom';
+import {useEffect, useState} from "react";
+import {isLoggedIn as checkAuth, logout } from '../../utils/Auth.ts'
 
 
 function Nav() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navLinks = [
-        { name: 'Pets', path: '/pets' },
-        { name: 'Create Pet', path: '/insert' },
-    ]
+    ];
+
+    useEffect(() => {
+        setIsLoggedIn(checkAuth());
+    }, []);
+
 
     const [menuOpen, setMenuOpen] = useState(false)
     return (
@@ -41,8 +42,20 @@ function Nav() {
                             ))}
                         </div>
                         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+                            {isLoggedIn ? (
+                                    <a
+                                            onClick={() => {
+                                                logout();
+                                                setIsLoggedIn(false);
+                                                window.location.href = '/'; // Optionally redirect
+                                            }}
+                                            className="text-sm/6 font-semibold texto-cor-corpo"
+                                    >
+                                        Log out <span aria-hidden="true">&rarr;</span>
+                                    </a>
+                            ) : (
                             <a href="/login" className="text-sm/6 font-semibold texto-cor-corpo">Log in <span
-                                    aria-hidden="true">&rarr;</span></a>
+                                    aria-hidden="true">&rarr;</span></a>)}
                         </div>
                     </nav>
                     {menuOpen && (
@@ -77,9 +90,14 @@ function Nav() {
                                         ))}
                                     </div>
                                     <div className="py-6">
+                                        {isLoggedIn ? (<a
+                                                onClick={() => {
+                                                    setIsLoggedIn(false);
+                                                }}
+                                                className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold texto-cor-corpo hover:bg-gray-50">Log out</a>):(
                                         <a href="/login"
                                            className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold texto-cor-corpo hover:bg-gray-50">Log
-                                            in</a>
+                                            in</a>)}
                                     </div>
                                 </div>
                             </div>
@@ -92,19 +110,8 @@ function Nav() {
                     <div style={{clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)'}}
                          className="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"></div>
                 </div>
-
-                <main>
-                    <Routes>
-                        <Route path='/insert' element={<CreatePetForm/>}/>
-                        <Route path='/' element={<Home/>}/>
-                        <Route path='/login' element={<LoginForm/>}/>
-                        <Route path='/signup' element={<SignUpForm/>}/>
-                        <Route path="*" element={<h2>Page Not Found</h2>}/>
-                    </Routes>
-                </main>
             </>
     )
-            ;
 }
 
 export default Nav;

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { login } from '../../utils/Auth.ts' // adjust path as needed
+import { login } from '../utils/Auth.ts' // adjust path as needed
 
 export function LoginForm() {
     const [message, setMessage] = useState<string | null>(null)
