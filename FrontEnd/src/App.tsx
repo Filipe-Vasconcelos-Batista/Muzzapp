@@ -1,7 +1,8 @@
 import Nav from "./components/Navigation/NavBar.tsx";
-import './output.css'
+import './index.css'
 import {LoginForm} from "./pages/Login.tsx";
 import { Home } from './pages/Home.tsx';
+import NotFound from './pages/General/404.tsx'
 import  SignUpForm  from './pages/Signup.tsx'
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {PrivateRoute, PublicOnlyRoute} from "./components/Navigation/Routes.tsx";
@@ -17,7 +18,8 @@ function App() {
                                 <Route path='/login' element={<PublicOnlyRoute><LoginForm /></PublicOnlyRoute>} />
                                 <Route path='/signup' element={<PublicOnlyRoute><SignUpForm /></PublicOnlyRoute>} />
                                 <Route path='/dashboard' element={<PrivateRoute><Dashboard/></PrivateRoute>} />
-                                <Route path="*" element={<h2>Page Not Found</h2>} />
+                                <Route path='/board' element={<Dashboard/>} />
+                                <Route path="*" element={<NotFound/>} />
                             </Routes>
                         </main>
 
