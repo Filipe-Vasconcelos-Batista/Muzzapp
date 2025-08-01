@@ -284,93 +284,91 @@ const AppSidebar: React.FC = () => {
   );
 
   return (
-    <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+          <aside
+                  className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
-          isExpanded || isMobileOpen
-            ? "w-[290px]"
-            : isHovered
-            ? "w-[290px]"
-            : "w-[90px]"
-        }
+                          isExpanded || isMobileOpen
+                                  ? "w-[290px]"
+                                  : isHovered
+                                          ? "w-[290px]"
+                                          : "w-[90px]"
+                  }
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
-      onMouseEnter={() => !isExpanded && setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div
-        className={`py-8 flex ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-        }`}
-      >
-        <Link to="/">
-          {isExpanded || isHovered || isMobileOpen ? (
-            <>
-              <img
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-              <img
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-            </>
-          ) : (
-            <img
-              src="/images/logo/logo-icon.svg"
-              alt="Logo"
-              width={32}
-              height={32}
-            />
-          )}
-        </Link>
-      </div>
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
-        <nav className="mb-6">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
+                  onMouseEnter={() => !isExpanded && setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+          >
+
+            <div
+                    className={`py-8 flex ${
+                            !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+                    }`}
+            >
+              <Link to="/">
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+                        <>
+                          <img
+                                  src="/images/logo/muzzapp.svg"
+                                  alt="muzzapp"
+                                  width={190}
+                                  height={40}
+                          />
+                        </>
                 ) : (
-                  <HorizontaLDots className="size-6" />
+                        <img
+                                src="/images/logo/muzzapp.svg"
+                                alt="Logo"
+                                width={15}
+                                height={15}
+                        />
                 )}
-              </h2>
-              {renderMenuItems(navItems, "main")}
+              </Link>
             </div>
-            <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  "Others"
-                ) : (
-                  <HorizontaLDots />
-                )}
-              </h2>
-              {renderMenuItems(othersItems, "others")}
+            <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+              <nav className="mb-6">
+                <div className="flex flex-col gap-4">
+                  <div>
+                    <h2
+                            className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                                    !isExpanded && !isHovered
+                                            ? "lg:justify-center"
+                                            : "justify-start"
+                            }`}
+                    >
+                      {isExpanded || isHovered || isMobileOpen ? (
+                              "Menu"
+                      ) : (
+                              <HorizontaLDots className="size-6"/>
+                      )}
+                    </h2>
+                    {renderMenuItems(navItems, "main")}
+                  </div>
+                  <div className="">
+                    <h2
+                            className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                                    !isExpanded && !isHovered
+                                            ? "lg:justify-center"
+                                            : "justify-start"
+                            }`}
+                    >
+                      {isExpanded || isHovered || isMobileOpen ? (
+                              "Others"
+                      ) : (
+                              <HorizontaLDots/>
+                      )}
+                    </h2>
+                    {renderMenuItems(othersItems, "others")}
+                  </div>
+                </div>
+              </nav>
+              {isExpanded || isHovered || isMobileOpen ? <SidebarWidget/> : null}
             </div>
-          </div>
-        </nav>
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
-      </div>
-    </aside>
+            <div aria-hidden="true"
+                 className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80">
+              <div style={{clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)'}}
+                   className="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75"></div>
+            </div>
+          </aside>
   );
 };
 

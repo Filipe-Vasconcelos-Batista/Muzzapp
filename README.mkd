@@ -1,0 +1,146 @@
+### Presentation ###
+
+Start with showing how it works
+run docker compose up
+Show the 'app' present how it works why you made choices etc etc
+after the show lets talk code,
+
+### talk Code ###
+
+### BackEnd ###
+show from the start
+## index.ts ##
+regular initiation file
+starts the pool
+iniciates the connection to the database
+
+gives a message for success an error for  failure
+Sigterm handle the disconection
+SIGINT	Interrupt Signal	Keyboard Interrupt (Ctrl + C)	Manual termination
+SIGTERM	Terminate Signal	kill command or system request	Programmatic termination
+
+## app is imported ##
+build apps just handles Fastify
+
+## database ##
+
+2 files:
+
+index.ts (its named like this to make imports easier)
+You will notice that it gives you a success message as well as a failure
+testDatabase just for testing, its an in memory database and it works fine for what it is this way we dont need to fill our prod database with useless data or have a database just for test.2
+
+## entities ##
+
+TypeORM protects our database from common structural inconsistencies and schema mismatches by tightly coupling our class definitions with the actual table schema. With its decorator-based approach, we ensure that each entity—like Pet—is mapped precisely to the corresponding database table, enforcing strong typing, relationship clarity, and column constraints at runtime.
+
+Combined with Zod, we add a second layer of validation at the application level. Zod allows us to:
+
+    ✅ Validate incoming data before it reaches the database
+
+    🚫 Reject malformed or unsafe input with detailed error messages
+
+    🔄 Maintain consistent schemas across Create, Update, and Response flows
+
+This dual setup forms a secure and efficient pipeline:
+
+    TypeORM ensures persistence integrity.
+
+    Zod guarantees input correctness.
+
+Together, they help prevent invalid data from ever making it into the system—shielding both the database and the application from logical vulnerabilities, malformed requests, and accidental data corruption.
+
+## The Routes ##
+# Health #
+
+I needed this to check the backend is working and I left it here because I thought it could be usefull
+health is just a regular endpoint to tell that the backend is working
+health db checks for the db connection (becomes redudant with the message in the database file)
+
+and details gives us a bunch of data about the time the app has been up as well as the memory allocation for this app (this helps in case of performance issues)
+also tells us what versions we have and what enviroment it is
+
+# Pets #
+
+uses fastify
+same endpoint /pets one uses the get and the other uses the post
+
+get gets you data from the database
+post lets you add srtuff to the databasewe could also use a patch and a delete (there others but its not relevant for this)
+
+our get returns us every pt in the database the front end will then use this to create a table
+(it might also gives us an error)
+
+post adds the new pet using the zod createPetSchema(putting it through the cjhecks to make sure it passes)
+
+then we create the pet it will gives us a message and return the actuall pet you just added
+
+
+I have also added a pet:id wish allows you to get individual data of a pet, its not implemented int he backend but I thought fastify was interesting and I wanted an extra to learn it
+
+index.ts:
+exports our routes making it cleaner to import into the index.ts
+
+
+### FrontEnd ###
+
+# NAVBar#
+where the magic happens, usually tou put the cRoutes inside of the app but since all of our routing comes from here I have decided to put it here, honestly it should be at app.tsx
+# PetInsert #
+read the code
+we use 2 useState to save xchanges
+handleChanges pretty much puts the values in
+handleSubmite sends the data into the database
+
+# PetList #
+
+pets is an array that keeps the information about the pets stored from the backend
+loading storees the loading stage
+error stores a message
+
+
+### other information ###
+
+
+start with the mindset: You’re not selling hours—you’re offering transformation. Make them see you as their technical cofounder without the equity, unless they want to offer it
+“I see this app as something that can define your brand and operations from the start. I’m not just here to code—I want to help shape it with you.”
+
+Avoid putting a hard number upfront. Instead, ask about their resources and openness.
+
+Try:
+
+    “Before diving into figures, I’d love to understand what’s possible on your side—whether budget, equity, perks, or a hybrid approach. That’ll help me structure something mutually sustainable.”
+
+This not only gives you room to adapt but also puts the responsibility on them to define their terms.
+
+Instead of negotiating hours like freelance gigs, frame the conversation around project phases (e.g. MVP, testing, iteration). This makes your involvement feel more purposeful and less transactional.
+
+You might say:
+
+    “I can commit to blocks of time per phase—planning, MVP build, and iteration. What timeline do you have in mind for the first release?”
+
+Start soft, but once they align with your thinking, lock in clarity with a written agreement, even if informal.
+
+Include:
+
+    Time expectations
+
+    Deliverables for each phase
+
+    Type of compensation (cash, equity, perks)
+
+    Communication rhythm
+
+This keeps you protected and aligned.
+
+Finish strong with something like:
+
+    “I’m excited about building something meaningful with you—let’s find a model that reflects the impact this app can have, and the energy we each want to invest.”
+
+Want help writing an email or Slack message that makes this pitch sound slick but natural? I can mock it up with your tone and style.
+
+
+The roadMap
+Budget
+whats the roadmap for this project? what do you expect?
+Whats the core idea for this project?

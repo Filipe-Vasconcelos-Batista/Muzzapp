@@ -18,29 +18,27 @@ import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Dash from "./pages/Dashboard/Home";
-import Nav from "./components/Navigation/NavBar.tsx";
 import {LoginForm} from "./pages/Login.tsx";
 import { Home } from './pages/Home.tsx';
 import  SignUpForm  from './pages/Signup.tsx'
 import {PrivateRoute, PublicOnlyRoute} from "./components/Navigation/Routes.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
+import InsertSalonForm from "./components/Salon/InsertSalonForm.tsx";
 
 
 export default function App() {
   return (
     <>
-      <Nav/>
-
       <Router>
         <ScrollToTop />
         <Routes>
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
-
             <Route index path="/dash" element={<Dash />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
+            <Route path="/salon" element={<InsertSalonForm />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
 
@@ -65,7 +63,7 @@ export default function App() {
 
           {/* Auth Layout */}
           <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/sign" element={<SignUp />} />
 
           <Route path='/' element={<PublicOnlyRoute><Home/></PublicOnlyRoute>} />
           <Route path='/login' element={<PublicOnlyRoute><LoginForm /></PublicOnlyRoute>} />
