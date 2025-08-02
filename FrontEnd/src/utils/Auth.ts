@@ -37,3 +37,21 @@ export function logout(): void {
 export function isLoggedIn(): boolean {
     return !!localStorage.getItem('authToken')
 }
+
+export function getJwtData(field?: string): null {
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+
+    try {
+        const base64Payload = token.split('.')[1];
+        const decodedPayload = JSON.parse(atob(base64Payload));
+
+        if (field) {
+            return decodedPayload[field] ?? null; // return specific field or null if not found
+        }
+        return decodedPayload; // return full payload if no field specified
+    } catch (err) {
+        console.error("❌ Error decoding JWT:", err);
+        return null;
+    }
+}

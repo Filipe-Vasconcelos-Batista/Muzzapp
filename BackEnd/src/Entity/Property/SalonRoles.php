@@ -8,6 +8,7 @@ use App\Enum\SalonRoleEnum;
 use App\Repository\Property\SalonRolesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SalonRolesRepository::class)]
 class SalonRoles
@@ -15,6 +16,7 @@ class SalonRoles
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['salon_role:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'salonRoles')]
@@ -26,6 +28,7 @@ class SalonRoles
     private ?Salon $salonId = null;
 
     #[ORM\Column(enumType: SalonRoleEnum::class)]
+    #[Groups(['salon_role:read'])]
     private ?SalonRoleEnum $role = null;
 
     #[ORM\Column]

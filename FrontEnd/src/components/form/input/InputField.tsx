@@ -17,32 +17,37 @@ interface InputProps {
   success?: boolean;
   error?: boolean;
   hint?: string;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   required?: boolean;
   pattern?: string,
 }
 
-const Input: FC<InputProps> = ({
-  type = "text",
-  id,
-  name,
-  placeholder,
-  value,
-  onChange,
-  className = "",
-  min,
-  max,
-  step,
-  disabled = false,
-  success = false,
-  error = false,
-  hint,
-                                 required = false,
+const Input: FC<InputProps> = (
+        {
+          type = "text",
+          id,
+          name,
+          placeholder,
+          value,
+          onBlur,
+          onChange,
+          className = "",
+          min,
+          max,
+          step,
+          disabled = false,
+          success = false,
+          error = false,
+          hint,
+                  required = false,
 }) => {
   const [internalError, setInternalError] = useState(false);
   const [internalSuccess, setInternalSuccess] = useState(false);
   const [internalHint, setInternalHint] = useState("");
+  const [touched, setTouched] = useState(false);
 
   useEffect(() => {
+    if (!touched) return; // skip validation until interaction
     if (!required || typeof value !== "string") {
       setInternalError(false);
       setInternalSuccess(false);
@@ -56,7 +61,7 @@ const Input: FC<InputProps> = ({
       return;
     }
     const urlRegex = new RegExp("^https?://.*\\.[a-z]{2,}$", "i");
-    const emailRegex =new RegExp( "/^[^@]+@[^@]+.[^@]+$","i");
+    const emailRegex =new RegExp("^[^@]+@[^@]+\\.[^@]+$", "i");
     switch (type) {
       case "url":
         if (!urlRegex.test(value as string)) {
@@ -66,7 +71,7 @@ const Input: FC<InputProps> = ({
         } else {
           setInternalError(false);
           setInternalSuccess(true);
-          setInternalHint("Looks good!");
+          setInternalHint("");
         }
         break;
 
@@ -78,14 +83,14 @@ const Input: FC<InputProps> = ({
         } else {
           setInternalError(false);
           setInternalSuccess(true);
-          setInternalHint("Looks good!");
+          setInternalHint("");
         }
         break;
       default:
         if (value.length > 3) {
           setInternalError(false);
           setInternalSuccess(true);
-          setInternalHint("Looks good!");
+          setInternalHint("");
         } else {
           setInternalError(false);
           setInternalSuccess(false);
@@ -93,7 +98,7 @@ const Input: FC<InputProps> = ({
         }
 
     }
-  }, [value, type]);
+  }, [value, type, required, touched]);
 
 
   let inputClasses = ` h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 ${className}`;
@@ -114,6 +119,7 @@ const Input: FC<InputProps> = ({
         type={type}
         id={id}
         name={name}
+        onBlur={() => setTouched(true)}
         placeholder={placeholder}
         value={value}
         onChange={onChange}

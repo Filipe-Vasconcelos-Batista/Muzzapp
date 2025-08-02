@@ -64,7 +64,7 @@ const PhoneInput: ({placeholder, onChange, selectPosition, value, required}: {
             setError(true);
         } else {
             setErrorMessage("");
-            setSuccessMessage("Phone number is valid!");
+            setSuccessMessage(" ");
             setError(false);
         }
 

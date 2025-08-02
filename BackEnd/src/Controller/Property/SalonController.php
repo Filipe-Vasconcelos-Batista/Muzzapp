@@ -5,6 +5,7 @@ namespace App\Controller\Property;
 use App\Controller\Utils\UtilsController;
 use App\Entity\Property\Salon;
 use App\Entity\Property\SalonRoles;
+use App\Entity\User\User;
 use App\Enum\SalonRoleEnum;
 use App\Form\Property\SalonType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,11 +13,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class SalonController extends AbstractController
 {
     public function __construct(
         private readonly UtilsController $utils,
+        private SerializerInterface $serializer
     ) {}
     #[Route('api/salon/create', name: 'app_salon_create', methods: ['POST'])]
     public function createSalon(
@@ -50,9 +53,14 @@ final class SalonController extends AbstractController
         $entityManager->persist($roleLink);
         $entityManager->flush();
 
+        $context = ['groups' => ['salon:read']];
+        $context2=['groups' => ['salon_role:read']];
         return new JsonResponse([
             'success'=>true,
-            'data'   => ['salon'=>$salon, 'OwnerRole'=>$roleLink],
+            'data'   => [
+                'salon'=>json_decode($this->serializer->serialize($salon, 'json',$context)) ,
+                'OwnerRole'=>json_decode($this->serializer->serialize($roleLink, 'json',$context2))
+            ],
         ], 201);
 
 
@@ -115,5 +123,23 @@ final class SalonController extends AbstractController
         $entityManager->flush();
 
         return new JsonResponse(['success' => true, 'message' => 'Salon deleted successfully']);
+    }
+    #[Route('api/salon/{id}', name: 'app_salon_get', methods: ['GET'])]
+    public function findSalons(
+        int $id,
+        EntityManagerInterface $entityManager,
+    ): JsonResponse
+    {
+        $salonRoles = $entityManager->getRepository(SalonRoles::class)->findBy([
+            'UserId' => $id,
+            'isActive' => true
+        ]);
+
+        $salons = array_map(fn($role) => $role->getSalonId(), $salonRoles);
+
+        return new JsonResponse([
+            'success' => true,
+            'data' => $salons
+        ]);
     }
 }

@@ -16,6 +16,10 @@ services:
     App\:
         resource: '../src/'
 
+    App\EventSubscriber\JWTCreatedSubscriber:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+
     App\Security\EmailVerifier:
         arguments:
             $signingSecret: '%env(APP_EMAIL_VERIFY_SECRET)%'

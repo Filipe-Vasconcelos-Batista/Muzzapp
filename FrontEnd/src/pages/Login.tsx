@@ -37,6 +37,19 @@ export function LoginForm() {
             setError(e.message || 'Login failed')
             setMessage(null)
         }
+        const token = localStorage.getItem('authToken'); // or wherever you store it
+        if (token) {
+            try {
+                const decoded = JSON.parse(atob(token.split('.')[1]));
+                console.log("✅ Decoded JWT Payload:");
+                
+                Object.entries(decoded).forEach(([key, value]) => {
+                    console.log(`${key}:`, value);
+                });
+            } catch (err) {
+                console.error("❌ Failed to decode JWT:", err);
+            }
+        }
     }
 
     return (

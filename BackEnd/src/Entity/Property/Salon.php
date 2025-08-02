@@ -8,6 +8,7 @@ use App\Repository\Property\SalonRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: SalonRepository::class)]
@@ -16,21 +17,26 @@ class Salon
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['salon:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['salon:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 20)]
+    #[Groups(['salon:read'])]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $website = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['salon:read'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['salon:read'])]
     private ?string $address = null;
 
     /**
