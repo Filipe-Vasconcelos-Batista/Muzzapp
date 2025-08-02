@@ -1,9 +1,5 @@
-import {JSX} from "react";
-import {replace}from "react-router-dom";
-import { Navigate } from 'react-router-dom';
-
 const API_URL = 'http://localhost:8081/api' // Update with your backend API
-
+const Env= import.meta.env.REACT_APP_API_URL
 // 🔐 Login function
 export async function login(email: string, password: string): Promise<void> {
     const response = await fetch(`${API_URL}/auth/login_check`, {

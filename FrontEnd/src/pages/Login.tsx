@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import {useEffect, useState} from 'react'
 import { login } from '../utils/Auth.ts'
 import Nav from "../components/Navigation/NavBar.tsx"; // adjust path as needed
 

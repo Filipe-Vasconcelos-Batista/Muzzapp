@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SalonController extends AbstractController
 {
     public function __construct(
-        private UtilsController $utils,
+        private readonly UtilsController $utils,
     ) {}
     #[Route('api/salon/create', name: 'app_salon_create', methods: ['POST'])]
     public function createSalon(

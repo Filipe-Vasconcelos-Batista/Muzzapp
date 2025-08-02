@@ -1,8 +1,9 @@
 import type React from "react";
 import type { FC } from "react";
+import {useEffect, useState} from "react";
 
 interface InputProps {
-  type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
+  type?: "text" | "number" | "email" | "password" | "date" | "time" | 'url' | string;
   id?: string;
   name?: string;
   placeholder?: string;
@@ -16,6 +17,8 @@ interface InputProps {
   success?: boolean;
   error?: boolean;
   hint?: string;
+  required?: boolean;
+  pattern?: string,
 }
 
 const Input: FC<InputProps> = ({
@@ -33,14 +36,73 @@ const Input: FC<InputProps> = ({
   success = false,
   error = false,
   hint,
+                                 required = false,
 }) => {
+  const [internalError, setInternalError] = useState(false);
+  const [internalSuccess, setInternalSuccess] = useState(false);
+  const [internalHint, setInternalHint] = useState("");
+
+  useEffect(() => {
+    if (!required || typeof value !== "string") {
+      setInternalError(false);
+      setInternalSuccess(false);
+      setInternalHint("");
+      return;
+    }
+    if (value.length === 0) {
+      setInternalError(true);
+      setInternalSuccess(false);
+      setInternalHint("This field is required.");
+      return;
+    }
+    const urlRegex = new RegExp("^https?://.*\\.[a-z]{2,}$", "i");
+    const emailRegex =new RegExp( "/^[^@]+@[^@]+.[^@]+$","i");
+    switch (type) {
+      case "url":
+        if (!urlRegex.test(value as string)) {
+          setInternalError(true);
+          setInternalSuccess(false);
+          setInternalHint("Enter a valid URL starting with http(s)://");
+        } else {
+          setInternalError(false);
+          setInternalSuccess(true);
+          setInternalHint("Looks good!");
+        }
+        break;
+
+      case "email":
+        if (!emailRegex.test(value as string)) {
+          setInternalError(true);
+          setInternalSuccess(false);
+          setInternalHint("Please enter a valid email like name@example.com");
+        } else {
+          setInternalError(false);
+          setInternalSuccess(true);
+          setInternalHint("Looks good!");
+        }
+        break;
+      default:
+        if (value.length > 3) {
+          setInternalError(false);
+          setInternalSuccess(true);
+          setInternalHint("Looks good!");
+        } else {
+          setInternalError(false);
+          setInternalSuccess(false);
+          setInternalHint("");
+        }
+
+    }
+  }, [value, type]);
+
+
   let inputClasses = ` h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 ${className}`;
 
   if (disabled) {
     inputClasses += ` text-gray-500 border-gray-300 opacity-40 bg-gray-100 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700 opacity-40`;
-  } else if (error) {
+  } else if (error || internalError) {
     inputClasses += `  border-error-500 focus:border-error-300 focus:ring-error-500/20 dark:text-error-400 dark:border-error-500 dark:focus:border-error-800`;
-  } else if (success) {
+  } else if (success || internalSuccess) {
     inputClasses += `  border-success-500 focus:border-success-300 focus:ring-success-500/20 dark:text-success-400 dark:border-success-500 dark:focus:border-success-800`;
   } else {
     inputClasses += ` bg-transparent text-gray-800 border-gray-300 focus:border-brand-300 focus:ring-brand-500/20 dark:border-gray-700 dark:text-white/90  dark:focus:border-brand-800`;
@@ -62,17 +124,17 @@ const Input: FC<InputProps> = ({
         className={inputClasses}
       />
 
-      {hint && (
+      {hint || internalHint  &&  (
         <p
           className={`mt-1.5 text-xs ${
-            error
+            error || internalError
               ? "text-error-500"
-              : success
+              : success || internalSuccess
               ? "text-success-500"
               : "text-gray-500"
           }`}
         >
-          {hint}
+          {hint || internalHint}
         </p>
       )}
     </div>
