@@ -86,7 +86,7 @@ final class SalonRolesController extends AbstractController
         $roleLink= new SalonRoles();
         $roleLink->setUserId($user);
         $roleLink->setSalonId($salon);
-        $roleLink->setRole(SalonRoleEnum::ROLE_WORKER);
+        $roleLink->setRoles([SalonRoleEnum::ROLE_WORKER]);
         $roleLink->setIsActive(true);
         $roleLink->setCreatedAt(new \DateTimeImmutable());
 

@@ -1,5 +1,4 @@
 const API_URL = 'http://localhost:8081/api' // Update with your backend API
-const Env= import.meta.env.REACT_APP_API_URL
 // 🔐 Login function
 export async function login(email: string, password: string): Promise<void> {
     const response = await fetch(`${API_URL}/auth/login_check`, {

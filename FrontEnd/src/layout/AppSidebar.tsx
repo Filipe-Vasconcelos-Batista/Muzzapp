@@ -11,12 +11,14 @@ import {
   ListIcon,
   PageIcon,
   PieChartIcon,
-  PlugInIcon,
+  PlugInIcon, PlusIcon, ShootingStarIcon,
   TableIcon,
   UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
+import {fetchWithAuth, getJwtData} from "../utils/Auth.ts";
+import {name} from "apexcharts";
 
 type NavItem = {
   name: string;
@@ -25,11 +27,35 @@ type NavItem = {
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
 
+const fetchOwnedSalons= async()=> {
+  const userId= getJwtData("id");
+  if(!userId ) return;
+
+  try{
+    const response = await fetchWithAuth('/api/salon/owner?id=${userId}', { method: "GET" });
+    const result = await response.json();
+    console.log("🪞 Owned salons:", result.data);
+  } catch (err) {
+    console.error("❌ API call failed:", err);
+  }
+};
+
+
 const navItems: NavItem[] = [
+  {
+    name: "Create Salon",
+    icon: <PlusIcon/> ,
+    path:"/salon"
+  },
+  {
+    name: "salon NAme",
+    icon: <ShootingStarIcon/>,
+    subItems: [{ name: "worker", icon:<PlusIcon/>, path: "/", pro: false }]
+  },
   {
     icon: <GridIcon />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    subItems: [{ name: "Ecommerce", path: "/dash", pro: false }],
   },
   {
     icon: <CalenderIcon />,

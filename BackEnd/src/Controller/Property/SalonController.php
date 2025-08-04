@@ -19,7 +19,7 @@ final class SalonController extends AbstractController
 {
     public function __construct(
         private readonly UtilsController $utils,
-        private SerializerInterface $serializer
+        private readonly SerializerInterface $serializer
     ) {}
     #[Route('api/salon/create', name: 'app_salon_create', methods: ['POST'])]
     public function createSalon(
@@ -27,6 +27,9 @@ final class SalonController extends AbstractController
         EntityManagerInterface $entityManager,
     ): JsonResponse
     {
+        $data = json_decode($request->getContent(), true);
+        $ownerWorker = $data['ownerWorker'] ?? false;
+
         $salon = new Salon();
         $form  = $this->createForm(SalonType::class, $salon);
         $form->submit(json_decode($request->getContent(), true));
@@ -41,14 +44,18 @@ final class SalonController extends AbstractController
         }
 
         $entityManager->persist($salon);
-
+        $roles= [SalonRoleEnum::ROLE_OWNER];
+        if ($ownerWorker) {
+            $roles[] = SalonRoleEnum::ROLE_WORKER;
+        }
         $user= $this->getUser();
         $roleLink= new SalonRoles();
         $roleLink->setUserId($user);
         $roleLink->setSalonId($salon);
-        $roleLink->setRole(SalonRoleEnum::ROLE_OWNER);
+        $roleLink->setRoles($roles);
         $roleLink->setIsActive(true);
         $roleLink->setCreatedAt(new \DateTimeImmutable());
+
 
         $entityManager->persist($roleLink);
         $entityManager->flush();
@@ -142,4 +149,25 @@ final class SalonController extends AbstractController
             'data' => $salons
         ]);
     }
+
+    #[Route('api/salon/owner/{id}', name: 'app_salon_get_owned', methods: ['GET'])]
+    public function findOwnedSalons(
+        int $id,
+        EntityManagerInterface $entityManager,
+    ): JsonResponse
+    {
+        $salonRoles = $entityManager->getRepository(SalonRoles::class)->findBy([
+            'UserId' => $id,
+            'IsActive' => true
+
+        ]);
+
+        $salons = array_map(fn($role) => $role->getSalonId(), $salonRoles);
+
+        return new JsonResponse([
+            'success' => true,
+            'data' => $salons
+        ]);
+    }
+
 }
