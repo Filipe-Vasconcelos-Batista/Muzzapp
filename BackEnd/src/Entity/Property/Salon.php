@@ -43,6 +43,7 @@ class Salon
      * @var Collection<int, SalonRoles>
      */
     #[ORM\OneToMany(targetEntity: SalonRoles::class, mappedBy: 'salonId')]
+    #[Groups(['salon:read'])]
     private Collection $salonRoles;
 
     /**

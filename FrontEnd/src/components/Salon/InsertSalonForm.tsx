@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState} from "react";
 import { EnvelopeIcon} from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
@@ -8,6 +8,7 @@ import PhoneInput from "../form/group-input/PhoneInput.tsx";
 import Button from "../ui/button/Button.tsx";
 import Alert from "../ui/alert/Alert.tsx";
 import {fetchWithAuth} from "../../utils/Auth.ts";
+import Checkbox from "../form/input/Checkbox.tsx";
 
 export default function InsertSalonForm() {
   const [name, setName] = useState("");
@@ -15,6 +16,7 @@ export default function InsertSalonForm() {
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
+  const [isOwnerWorker, setIsOwnerWorker] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const handleSubmit = async () => {
@@ -28,8 +30,8 @@ export default function InsertSalonForm() {
 
 
     try {
-      console.log(payload);
-      const response = await fetchWithAuth("/salon/create", {
+      const query = isOwnerWorker ? "?isOwnerWorker=true" : "";
+      const response = await fetchWithAuth(`/salon/create${query}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -82,73 +84,83 @@ export default function InsertSalonForm() {
                   />
           ) : null}
         </>
+
+          <div className="flex items-center gap-3">
+            <Checkbox
+                    checked={isOwnerWorker}
+                    onChange={(checked) => setIsOwnerWorker(checked)}
+            />
+            <span className="block text-sm font-medium text-gray-700 dark:text-gray-400">
+            Trabalhas no Salão?
+          </span>
+        </div>
+        <div className="space-y-6">
+          <div>
+            <Label htmlFor="inputName">Nome</Label>
+            <Input
+                    type="text"
+                    id="inputName"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="space-y-6">
+          <div>
+            <Label htmlFor="inputUrl">Website</Label>
+            <Input
+                    type="url"
+                    id="inputUrl"
+                    value={website}
+                    required
+                    onChange={(e) => setWebsite(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="space-y-6">
           <div className="space-y-6">
             <div>
-              <Label htmlFor="inputName">Nome</Label>
-              <Input
-                      type="text"
-                      id="inputName"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="space-y-6">
-            <div>
-              <Label htmlFor="inputUrl">Website</Label>
-              <Input
-                      type="url"
-                      id="inputUrl"
-                      value={website}
-                      required
-                      onChange={(e) => setWebsite(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="space-y-6">
-            <div className="space-y-6">
-              <div>
-                <Label>Email</Label>
-                <div className="relative">
-                  <Input
-                          placeholder="info@gmail.com"
-                          type="email"
-                          value={email}
-                          required
-                          className="pl-[62px]"
-                          onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <span className="absolute left-0 top-1/2 -translate-y-1/2 border-r border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
+              <Label>Email</Label>
+              <div className="relative">
+                <Input
+                        placeholder="info@gmail.com"
+                        type="email"
+                        value={email}
+                        required
+                        className="pl-[62px]"
+                        onChange={(e) => setEmail(e.target.value)}
+                />
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 border-r border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
               <EnvelopeIcon/>
             </span>
-                </div>
               </div>
             </div>
           </div>
-          <div className="space-y-6">
-            <div>
-              <Label htmlFor="inputAdress">Morada</Label>
-              <Input
-                      type="text"
-                      id="inputAdress"
-                      required
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-              />
-            </div>
-          </div>
+        </div>
+        <div className="space-y-6">
           <div>
-            <Label>Phone</Label>
-            <PhoneInput
-                    selectPosition="start"
-                    type='cell'
-                    value={phone}
+            <Label htmlFor="inputAdress">Morada</Label>
+            <Input
+                    type="text"
+                    id="inputAdress"
                     required
-                    placeholder="+351 91265845987"
-                    onChange={(value) => setPhone(value)}
-             />
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+            />
           </div>
+        </div>
+        <div>
+          <Label>Phone</Label>
+          <PhoneInput
+                  selectPosition="start"
+                  type='cell'
+                  value={phone}
+                  required
+                  placeholder="+351 91265845987"
+                  onChange={(value) => setPhone(value)}
+          />
+        </div>
 
         <div className="flex justify-end w-full">
           <Button size="sm"

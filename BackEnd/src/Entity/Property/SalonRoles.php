@@ -27,8 +27,9 @@ class SalonRoles
     #[ORM\JoinColumn(nullable: false)]
     private ?Salon $salonId = null;
 
+    
     #[ORM\Column(type:'json')]
-    #[Groups(['salon_role:read'])]
+    #[Groups(['salon:read'])]
     private ?array $roles = [];
 
     #[ORM\Column]
@@ -79,13 +80,21 @@ class SalonRoles
 
     public function setRoles(array $roles): self
     {
+        $normalizedRoles = [];
+
         foreach ($roles as $role) {
-            if (!SalonRoleEnum::tryFrom($role)) {
-                throw new \InvalidArgumentException("Invalid role: " . $role);
+            if ($role instanceof SalonRoleEnum) {
+                $normalizedRoles[] = $role->value;
+            } else {
+                $enum = SalonRoleEnum::tryFrom($role);
+                if (!$enum) {
+                    throw new \InvalidArgumentException("Invalid role: " . (string)$role);
+                }
+                $normalizedRoles[] = $enum->value;
             }
         }
 
-        $this->roles = $roles;
+        $this->roles = $normalizedRoles;
         return $this;
     }
 

@@ -27,8 +27,7 @@ final class SalonController extends AbstractController
         EntityManagerInterface $entityManager,
     ): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        $ownerWorker = $data['ownerWorker'] ?? false;
+        $ownerWorker = filter_var($request->query->get('isOwnerWorker', false), FILTER_VALIDATE_BOOLEAN);
 
         $salon = new Salon();
         $form  = $this->createForm(SalonType::class, $salon);
@@ -61,12 +60,10 @@ final class SalonController extends AbstractController
         $entityManager->flush();
 
         $context = ['groups' => ['salon:read']];
-        $context2=['groups' => ['salon_role:read']];
         return new JsonResponse([
             'success'=>true,
             'data'   => [
                 'salon'=>json_decode($this->serializer->serialize($salon, 'json',$context)) ,
-                'OwnerRole'=>json_decode($this->serializer->serialize($roleLink, 'json',$context2))
             ],
         ], 201);
 
@@ -150,7 +147,7 @@ final class SalonController extends AbstractController
         ]);
     }
 
-    #[Route('api/salon/owner/{id}', name: 'app_salon_get_owned', methods: ['GET'])]
+    #[Route('api/salon/owner/{id}', name: 'app_salon_get', methods: ['GET'])]
     public function findOwnedSalons(
         int $id,
         EntityManagerInterface $entityManager,
@@ -158,15 +155,16 @@ final class SalonController extends AbstractController
     {
         $salonRoles = $entityManager->getRepository(SalonRoles::class)->findBy([
             'UserId' => $id,
-            'IsActive' => true
+            'isActive' => true
 
         ]);
 
         $salons = array_map(fn($role) => $role->getSalonId(), $salonRoles);
 
+        $context = ['groups' => ['salon:read']];
         return new JsonResponse([
             'success' => true,
-            'data' => $salons
+            'salons'=>json_decode($this->serializer->serialize($salons, 'json',$context)) ,
         ]);
     }
 
