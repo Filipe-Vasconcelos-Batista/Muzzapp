@@ -6,7 +6,6 @@ use App\Entity\User\User;
 use App\Entity\Workers\WorkerRole;
 use App\Enum\SalonRoleEnum;
 use App\Repository\Property\SalonRolesRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 

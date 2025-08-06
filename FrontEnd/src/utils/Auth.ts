@@ -27,15 +27,6 @@ export async function fetchWithAuth(endpoint: string, options: RequestInit = {})
     return fetch(`${API_URL}${endpoint}`, { ...options, headers })
 }
 
-// 🚪 Logout function
-export function logout(): void {
-    localStorage.removeItem('authToken')
-}
-
-// 🕵️‍♂️ Check if user is logged in
-export function isLoggedIn(): boolean {
-    return !!localStorage.getItem('authToken')
-}
 
 export function getJwtData(field?: string): null {
     const token = localStorage.getItem('authToken');
@@ -53,4 +44,14 @@ export function getJwtData(field?: string): null {
         console.error("❌ Error decoding JWT:", err);
         return null;
     }
+}
+
+// 🚪 Logout function
+export function logout(): void {
+    localStorage.removeItem('authToken')
+}
+
+// 🕵️‍♂️ Check if user is logged in
+export function isLoggedIn(): boolean {
+    return !!localStorage.getItem('authToken')
 }

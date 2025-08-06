@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import { Link, useLocation } from "react-router";
-
-// Assume these icons are imported from an icon library
 import {
   BoxCubeIcon,
   CalenderIcon,
@@ -17,8 +15,6 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import {fetchWithAuth, getJwtData} from "../utils/Auth.ts";
-import {name} from "apexcharts";
 
 type NavItem = {
   name: string;
@@ -26,66 +22,6 @@ type NavItem = {
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
 };
-
-const fetchOwnedSalons= async()=> {
-  const userId= getJwtData("id");
-  if(!userId ) return;
-
-  try{
-    const response = await fetchWithAuth('/api/salon/owner?id=${userId}', { method: "GET" });
-    const result = await response.json();
-    console.log("🪞 Owned salons:", result.data);
-  } catch (err) {
-    console.error("❌ API call failed:", err);
-  }
-};
-
-
-const navItems: NavItem[] = [
-  {
-    name: "Create Salon",
-    icon: <PlusIcon/> ,
-    path:"/salon"
-  },
-  {
-    name: "salon NAme",
-    icon: <ShootingStarIcon/>,
-    subItems: [{ name: "worker", icon:<PlusIcon/>, path: "/", pro: false }]
-  },
-  {
-    icon: <GridIcon />,
-    name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/dash", pro: false }],
-  },
-  {
-    icon: <CalenderIcon />,
-    name: "Calendar",
-    path: "/calendar",
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
-  },
-];
 
 const othersItems: NavItem[] = [
   {
@@ -119,8 +55,90 @@ const othersItems: NavItem[] = [
 ];
 
 const AppSidebar: React.FC = () => {
-  const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { isExpanded, isMobileOpen, isHovered, setIsHovered, salons } = useSidebar();
   const location = useLocation();
+
+  const salonNavItems = salons.map((salon) => {
+    const roles = salon.salonRoles.flatMap((r) => r.roles);
+    const isOwner = roles.includes("Owner");
+    const isWorker = roles.includes("Worker");
+
+    const subItems = [];
+
+    // Worker-only pages
+    if (isWorker) {
+      subItems.push(
+              { name: "Calendario", path: `/salon/${salon.id}/minha agenda`, pro: false },
+              { name: "Time Off", path: `/salon/${salon.id}/timeOff`, pro: false },
+              { name: "notificações pessoais", path: `/salon/${salon.id}/programar horarios`, pro: false },
+      );
+    }
+
+    // Owner-only pages
+    if (isOwner) {
+      subItems.push(
+              { name: "Gestão trabalhador", path: `/salon/${salon.id}/ManagePeople`, pro: false },
+              { name: "Add Serviços", path: `/salon/${salon.id}/add-serviçoes`, pro: false },
+              { name: "Alterar Horarios", path: `/salon/${salon.id}/programar horarios`, pro: false },
+              { name: "dashboard", path: `/salon/${salon.id}/horarios`, pro: false },
+              { name: "Notificações do slão", path: `/salon/${salon.id}/programar horarios`, pro: false },
+              { name: "Fazer Marcações Manuais", path: `/salon/${salon.id}/settings`, pro: false },
+              { name: "Perfil do salão", path: `/salon/${salon.id}/settings`, pro: false },
+              { name: "Settings", path: `/salon/${salon.id}/settings`, pro: false },
+              { name: "Gerir Agendas", path: `/salon/${salon.id}/settings`, pro: false }
+      );
+    }
+
+    return {
+      name: salon.name,
+      icon: <ShootingStarIcon />,
+      subItems,
+    };
+  });
+
+  const navItems: NavItem[] = useMemo(() => [
+    {
+      name: "Create Salon",
+      icon: <PlusIcon/> ,
+      path:"/salon"
+    },
+
+      ...salonNavItems
+    ,
+    {
+      icon: <GridIcon />,
+      name: "Dashboard",
+      subItems: [{ name: "Ecommerce", path: "/dash", pro: false }],
+    },
+    {
+      icon: <CalenderIcon />,
+      name: "Calendar",
+      path: "/calendar",
+    },
+    {
+      icon: <UserCircleIcon />,
+      name: "User Profile",
+      path: "/profile",
+    },
+    {
+      name: "Forms",
+      icon: <ListIcon />,
+      subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+    },
+    {
+      name: "Tables",
+      icon: <TableIcon />,
+      subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+    },
+    {
+      name: "Pages",
+      icon: <PageIcon />,
+      subItems: [
+        { name: "Blank Page", path: "/blank", pro: false },
+        { name: "404 Error", path: "/error-404", pro: false },
+      ],
+    }
+  ],[salons]);
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
