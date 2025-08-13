@@ -13,6 +13,7 @@ import LineChart from "./pages/Charts/LineChart";
 import BarChart from "./pages/Charts/BarChart";
 import Calendar from "./pages/Calendar";
 import BasicTables from "./pages/Tables/BasicTables";
+import PeopleTable from "./pages/Tables/PeopleTable";
 import FormElements from "./pages/Forms/FormElements";
 import Blank from "./pages/Blank";
 import AppLayout from "./layout/AppLayout";
@@ -22,8 +23,7 @@ import {LoginForm} from "./pages/Login.tsx";
 import { Home } from './pages/Home.tsx';
 import  SignUpForm  from './pages/Signup.tsx'
 import {PrivateRoute, PublicOnlyRoute} from "./components/Navigation/Routes.tsx";
-import Dashboard from "./pages/Dashboard.tsx";
-import InsertSalonForm from "./components/Salon/InsertSalonForm.tsx";
+import InsertSalonForm from "./components/form/Salon/InsertSalonForm.tsx";
 
 
 export default function App() {
@@ -35,6 +35,7 @@ export default function App() {
           {/* Dashboard Layout */}
           <Route element={<AppLayout />}>
             <Route index path="/dash" element={<Dash />} />
+            <Route path="/salon/:salonId/ManagePeople" element={<PeopleTable />} />
 
             {/* Others Page */}
             <Route path="/profile" element={<UserProfiles />} />
@@ -68,7 +69,7 @@ export default function App() {
           <Route path='/' element={<PublicOnlyRoute><Home/></PublicOnlyRoute>} />
           <Route path='/login' element={<PublicOnlyRoute><LoginForm /></PublicOnlyRoute>} />
           <Route path='/signup' element={<PublicOnlyRoute><SignUpForm /></PublicOnlyRoute>} />
-          <Route path='/dashboard' element={<PrivateRoute><Dashboard/></PrivateRoute>} />
+          <Route path='/dashboard' element={<PrivateRoute><Dash/></PrivateRoute>} />
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />

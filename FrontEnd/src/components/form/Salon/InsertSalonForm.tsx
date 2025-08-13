@@ -1,14 +1,14 @@
 import { useState} from "react";
-import { EnvelopeIcon} from "../../icons";
-import Label from "../form/Label";
-import Input from "../form/input/InputField";
-import PageBreadcrumb from "../common/PageBreadCrumb.tsx";
-import ComponentCard from "../common/ComponentCard.tsx";
-import PhoneInput from "../form/group-input/PhoneInput.tsx";
-import Button from "../ui/button/Button.tsx";
-import Alert from "../ui/alert/Alert.tsx";
-import {fetchWithAuth} from "../../utils/Auth.ts";
-import Checkbox from "../form/input/Checkbox.tsx";
+import { EnvelopeIcon} from "../../../icons";
+import Label from "../Label.tsx";
+import Input from "../input/InputField.tsx";
+import PageBreadcrumb from "../../common/PageBreadCrumb.tsx";
+import ComponentCard from "../../common/ComponentCard.tsx";
+import PhoneInput from "../group-input/PhoneInput.tsx";
+import Button from "../../ui/button/Button.tsx";
+import Alert from "../../ui/alert/Alert.tsx";
+import {fetchWithAuth} from "../../../utils/Auth.ts";
+import Checkbox from "../input/Checkbox.tsx";
 
 export default function InsertSalonForm() {
   const [name, setName] = useState("");
@@ -48,12 +48,6 @@ export default function InsertSalonForm() {
       setSuccessMessage("");
     }
   };
-
-  const countries = [
-    { code: "PT", label: "+351" },
-    { code: "Lux", label: "+352" },
-  ];
-
 
   return (
           <div>

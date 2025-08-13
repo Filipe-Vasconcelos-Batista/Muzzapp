@@ -26,6 +26,8 @@ class SalonRoles
     #[ORM\JoinColumn(nullable: false)]
     private ?Salon $salonId = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?string $title = null;
     
     #[ORM\Column(type:'json')]
     #[Groups(['salon:read'])]
@@ -148,5 +150,15 @@ class SalonRoles
         $this->workerRole = $workerRole;
 
         return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(?string $title): void
+    {
+        $this->title = $title;
     }
 }
