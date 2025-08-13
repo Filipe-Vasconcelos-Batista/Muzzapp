@@ -6,20 +6,21 @@ import Button from "../../ui/button/Button.tsx";
 import Alert from "../../ui/alert/Alert.tsx";
 import {fetchWithAuth} from "../../../utils/Auth.ts";
 import AccordeonComponentCards from "../../common/AccordeonComponentCards.tsx";
+import { useParams } from "react-router-dom";
 
 export default function AddWorker() {
     const[email, setEmail] = useState("");
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const { salonId } = useParams()
     const handleSubmit = async () => {
         const payload = {
             email,
         };
-        const { salonId } = useParams()
 
 
         try {
-            const response = await fetchWithAuth(`/api/salon/user/role/${salonId}`, {
+            const response = await fetchWithAuth(`/api/salon/role/${salonId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -32,7 +33,7 @@ export default function AddWorker() {
                 setSuccessMessage("Utilizador Encontrado");
                 setErrorMessage("");
             }else{
-                setErrorMessage('Error ao Adicionar funcionário.')
+                setErrorMessage('Erro ao Adicionar funcionário.')
                 setSuccessMessage('')
             }
 

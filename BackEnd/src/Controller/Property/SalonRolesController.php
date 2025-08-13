@@ -13,12 +13,15 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class SalonRolesController extends AbstractController
 {
     public function __construct(
         private readonly UtilsController $utils,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly SerializerInterface $serializer,
     ) {}
 
     #[Route('/api/salon/user/role/{id}', name: 'app_create_user_and_salon_role', methods: ['POST'])]
@@ -79,6 +82,22 @@ final class SalonRolesController extends AbstractController
                 'salonRole' => $roleLink
             ]
         ],201);
+    }
+
+    /**
+     * @throws ExceptionInterface
+     */
+    #[Route('/api/salon/users/{salonId}', name: 'app_property_salon_users', methods: ['GET'])]
+    public function GetSalonRoles(
+        int $salonId
+    ): JsonResponse
+    {
+        $salon=$this->utils->findSalon($salonId);
+        $repo= $this->entityManager->getRepository(SalonRoles::class);
+        $roles=$repo->findBy(['salonId'=>$salon]);
+
+        $json= $this->serializer->serialize($roles, 'json', ['groups' => ['salon_roles_get']]);
+        return new JsonResponse($json, 200, [], true);
     }
 
     private function createWorkerRoles(Salon $salon, User $user): SalonRoles

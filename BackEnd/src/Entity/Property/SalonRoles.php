@@ -15,25 +15,28 @@ class SalonRoles
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['salon_role:read'])]
+    #[Groups(['salon_role:read', 'salon_roles_get'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'salonRoles')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['salon_roles_get'])]
     private ?User $UserId = null;
 
     #[ORM\ManyToOne(inversedBy: 'salonRoles')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Salon $salonId = null;
 
+    #[Groups(['salon_roles_get'])]
     #[ORM\Column(nullable: true)]
     private ?string $title = null;
     
     #[ORM\Column(type:'json')]
-    #[Groups(['salon:read'])]
+    #[Groups(['salon:read', 'salon_roles_get'])]
     private ?array $roles = [];
 
     #[ORM\Column]
+    #[Groups(['salon_roles_get'])]
     private ?bool $isActive = null;
 
     #[ORM\Column]
