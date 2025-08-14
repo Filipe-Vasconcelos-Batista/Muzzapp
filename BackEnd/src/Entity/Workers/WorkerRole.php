@@ -5,12 +5,12 @@ namespace App\Entity\Workers;
 use App\Entity\Property\SalonRoles;
 use App\Entity\Scheduling\Calendar;
 use App\Entity\Services\Details;
-use App\Enum\WeekDaysEnum;
 use App\Repository\Workers\WorkerRoleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: WorkerRoleRepository::class)]
 class WorkerRole
@@ -18,26 +18,16 @@ class WorkerRole
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['salon_roles_get'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'workerRole', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?SalonRoles $salonRolesId = null;
 
-    #[ORM\Column(type: Types::SIMPLE_ARRAY, enumType: WeekDaysEnum::class)]
-    private array $workDays = [];
-
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $startWorkTime = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE)]
-    private ?\DateTime $endWorkTime = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTime $startBreakTime = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTime $endBreakTime = null;
+    #[ORM\Column(type: Types::JSON)]
+    #[Groups(['salon_roles_get'])]
+    private array $weeklySchedule = [];
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -79,66 +69,14 @@ class WorkerRole
         return $this;
     }
 
-    /**
-     * @return WeekDaysEnum[]
-     */
-    public function getWorkDays(): array
+    public function getWeeklySchedule(): array
     {
-        return $this->workDays;
+        return $this->weeklySchedule;
     }
 
-    public function setWorkDays(array $workDays): static
+    public function setWeeklySchedule(array $weeklySchedule): self
     {
-        $this->workDays = $workDays;
-
-        return $this;
-    }
-
-    public function getStartWorkTime(): ?\DateTime
-    {
-        return $this->startWorkTime;
-    }
-
-    public function setStartWorkTime(\DateTime $startWorkTime): static
-    {
-        $this->startWorkTime = $startWorkTime;
-
-        return $this;
-    }
-
-    public function getEndWorkTime(): ?\DateTime
-    {
-        return $this->endWorkTime;
-    }
-
-    public function setEndWorkTime(\DateTime $endWorkTime): static
-    {
-        $this->endWorkTime = $endWorkTime;
-
-        return $this;
-    }
-
-    public function getStartBreakTime(): ?\DateTime
-    {
-        return $this->startBreakTime;
-    }
-
-    public function setStartBreakTime(?\DateTime $startBreakTime): static
-    {
-        $this->startBreakTime = $startBreakTime;
-
-        return $this;
-    }
-
-    public function getEndBreakTime(): ?\DateTime
-    {
-        return $this->endBreakTime;
-    }
-
-    public function setEndBreakTime(?\DateTime $endBreakTime): static
-    {
-        $this->endBreakTime = $endBreakTime;
-
+        $this->weeklySchedule = $weeklySchedule;
         return $this;
     }
 

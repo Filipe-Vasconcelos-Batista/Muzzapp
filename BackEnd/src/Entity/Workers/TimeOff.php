@@ -2,11 +2,13 @@
 
 namespace App\Entity\Workers;
 
+use App\Enum\Worker\TimeOffStatusEnum;
 use App\Repository\Workers\TimeOffRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TimeOffRepository::class)]
 class TimeOff
@@ -22,11 +24,23 @@ class TimeOff
     #[ORM\OneToMany(targetEntity: WorkerRole::class, mappedBy: 'timeOff')]
     private Collection $workerRoleId;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTime $start = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\GreaterThanOrEqual(
+        propertyPath: "start",
+        message: "The end time must be after the start time."
+    )]
     private ?\DateTime $end = null;
+
+
+    #[ORM\Column(type: Types::STRING, enumType: TimeOffStatusEnum::class)]
+    #[Assert\NotNull]
+    private TimeOffStatusEnum $status = TimeOffStatusEnum::Pending;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $justification = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $reason = null;
@@ -136,4 +150,26 @@ class TimeOff
 
         return $this;
     }
+    public function getStatus(): TimeOffStatusEnum
+    {
+        return $this->status;
+    }
+
+    public function setStatus(TimeOffStatusEnum $status): self
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getJustification(): ?string
+    {
+        return $this->justification;
+    }
+
+    public function setJustification(?string $justification): self
+    {
+        $this->justification = $justification;
+        return $this;
+    }
+
 }

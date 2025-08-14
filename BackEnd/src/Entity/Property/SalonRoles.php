@@ -46,6 +46,7 @@ class SalonRoles
     private ?\DateTimeImmutable $alteredAt = null;
 
     #[ORM\OneToOne(mappedBy: 'salonRolesId', cascade: ['persist', 'remove'])]
+    #[Groups(['salon_roles_get'])]
     private ?WorkerRole $workerRole = null;
 
     public function getId(): ?int
