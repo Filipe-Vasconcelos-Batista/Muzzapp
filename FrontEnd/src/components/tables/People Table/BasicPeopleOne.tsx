@@ -8,6 +8,7 @@ import {
 } from "../../ui/table";
 import Badge from "../../ui/badge/Badge";
 import {fetchWithAuth} from "../../../utils/Auth.ts";
+import {useParams} from "react-router-dom";
 
 interface BackendUser{
   id: number;
@@ -36,7 +37,8 @@ interface Order {
   status: string;
 }
 
-export default function BasicPeopleOne({ salonId }: { salonId: number }) {
+export default function BasicPeopleOne() {
+  const { salonId } = useParams<{ salonId: string }>();
   const [tableData, setTableData] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const demoClients = ["Joaquina", "Maria", "Carla", "Andreia", "Sandra", "Helena"];
@@ -64,7 +66,7 @@ export default function BasicPeopleOne({ salonId }: { salonId: number }) {
   useEffect(()=>{
     const loadUsers= async ()=>{
       try{
-        const res= await fetchWithAuth(`/api/salon/users/${salonId}`);
+        const res= await fetchWithAuth(`/salon/users/${salonId}`);
         if (!res.ok) throw new Error ('Failed to fretch salon users');
         const users: BackendUser[]= await res.json();
 

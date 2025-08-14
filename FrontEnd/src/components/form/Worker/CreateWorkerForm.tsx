@@ -8,6 +8,7 @@ import Alert from "../../ui/alert/Alert.tsx";
 import {fetchWithAuth} from "../../../utils/Auth.ts";
 import Checkbox from "../input/Checkbox.tsx";
 import AccordeonComponentCards from "../../common/AccordeonComponentCards.tsx";
+import {useParams} from "react-router-dom";
 
 export default function CreateWorker() {
     const [firstName, setFirstName] = useState("");
@@ -18,6 +19,7 @@ export default function CreateWorker() {
     const [isSystemEmail, setIsSystemEmail] = useState(false);
     const [successMessage, setSuccessMessage] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
+    const { salonId } = useParams()
     const handleSubmit = async () => {
         const payload = {
             firstName,
@@ -26,11 +28,10 @@ export default function CreateWorker() {
             phoneNumber: phone,
             isSystemEmail: false
         };
-        const { salonId } = useParams()
 
 
         try {
-            const response = await fetchWithAuth(`/api/salon/user/role/${salonId}`, {
+            const response = await fetchWithAuth(`/salon/user/role/${salonId}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
