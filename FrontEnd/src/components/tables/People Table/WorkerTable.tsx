@@ -9,6 +9,7 @@ import {
 import Badge from "../../ui/badge/Badge";
 import {fetchWithAuth} from "../../../utils/Auth.ts";
 import {useParams} from "react-router-dom";
+import {Link} from "react-router";
 
 interface BackendUser{
   id: number;
@@ -37,7 +38,7 @@ interface Order {
   status: string;
 }
 
-export default function BasicPeopleOne() {
+export default function WorkerTable() {
   const { salonId } = useParams<{ salonId: string }>();
   const [tableData, setTableData] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
@@ -155,9 +156,11 @@ export default function BasicPeopleOne() {
                       />
                     </div>
                     <div>
-                      <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
-                        {order.user.name}
-                      </span>
+                      <Link to={`/profile`}>
+                        <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90">
+                          {order.user.name}
+                        </span>
+                      </Link>
                       <span className="block text-gray-500 text-theme-xs dark:text-gray-400">
                         {order.user.role}
                       </span>
